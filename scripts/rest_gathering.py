@@ -16,7 +16,7 @@ def getkey():
 
     return chave
 
-client = tweepy.Client(bearer_token=getkey(), wait_on_rate_limit=True)
+client = tweepy.Client(bearer_token=getkey(), wait_on_rate_limit=False)
 
 def add_args():
     parser = argparse.ArgumentParser(description='Coleta tweets de acordo com a query, data e limites.')
@@ -47,7 +47,7 @@ def main():
     arq.write("[\n")
     counter = 1
 
-    for tweet in tweepy.Paginator(client.search_recent_tweets, args.query, max_results=100, end_time=args.end_time, start_time=args.start_time, tweet_fields=['created_at', 'lang', 'public_metrics', 'author_id', 'entities']).flatten():
+    for tweet in tweepy.Paginator(client.search_all_tweets, args.query, max_results=100, end_time=args.end_time, start_time=args.start_time, tweet_fields=['created_at', 'lang', 'public_metrics', 'author_id', 'entities']).flatten():
         id = tweet.id
         text = tweet.text
         created_at = tweet.created_at
