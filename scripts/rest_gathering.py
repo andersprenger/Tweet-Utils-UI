@@ -39,7 +39,7 @@ def collect_tweets(args, twarc):
     arq.write("[\n")
     counter = 1
 
-    search_results = twarc.search_all(query=args.query, start_time=args.start_time, end_time=args.end_time, tweet_fields="created_at,lang,public_metrics,author_id,entities", max_results=100)
+    search_results = twarc.search_all(query=args.query, start_time=args.start_time, end_time=args.end_time, tweet_fields="attachments,created_at,lang,author_id,public_metrics,entities", max_results=args.maxtweets)
 
     for page in search_results:
         for tweet in ensure_flattened(page):
@@ -55,6 +55,14 @@ def collect_tweets(args, twarc):
                 for url in tweet['entities']['urls']:
                     urls.append(url['url'])
 
+            people_cited = []
+            if tweet['entities'] is not None and 'annotations' in tweet['entities']:
+                for annotation in tweet['entities']['annotations']:
+                    if annotation['type'] == 'Person':
+                        people_cited.append(annotation['normalized_text'])
+
+            has_rich_media = tweet['attachments'] is not None and 'media_keys' in tweet['attachments']
+
             line = {
                 'id': tweet_id,
                 'text': text,
@@ -62,7 +70,9 @@ def collect_tweets(args, twarc):
                 'lang': lang,
                 'author_id': author_id,
                 'retweet_count': rt_count,
-                'urls': urls
+                'urls': urls,
+                'people_cited': people_cited,
+                'has_rich_media': has_rich_media
             }
             line['created_at'] = datetime.datetime.strptime(line['created_at'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%dT%H:%M:%SZ')
 
