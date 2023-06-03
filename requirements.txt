@@ -4,3 +4,4 @@ ijson
 wordcloud
 matplotlib
 numpy
+twarc
