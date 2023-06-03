@@ -391,6 +391,9 @@ class Ui_StackedWidget(object):
             font-size: 24px;""")
         self.rest_gathering_dateInicio_label.setGeometry(
             QRect(165, 261, 130, 29))
+        
+        # Definindo o formato de exibição como "DD/MM/YYYY HH:MM", para corrigir incompatibilidade com macOS
+        self.rest_gathering_dateInicio.setDisplayFormat("dd/MM/yyyy HH:mm")
 
         self.rest_gathering_dateFim = QDateTimeEdit(self.rest_gathering)
         self.rest_gathering_dateFim.setObjectName(u"rest_gathering_dateFim")
@@ -425,6 +428,9 @@ class Ui_StackedWidget(object):
                 height: 12px;
             }""")
         self.rest_gathering_dateFim.setGeometry(QRect(384, 292, 204, 48))
+
+        # Definindo o formato de exibição como "DD/MM/YYYY HH:MM", para corrigir incompatibilidade com macOS
+        self.rest_gathering_dateFim.setDisplayFormat("dd/MM/yyyy HH:mm")
 
         self.rest_gathering_dateFim_label = QLabel(self.rest_gathering)
         self.rest_gathering_dateFim_label.setObjectName(
