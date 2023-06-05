@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 ################################################################################
 # Form generated from reading UI file 'untitledowgQMA.ui'
 ##
@@ -8,15 +6,14 @@
 # WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
+import os
+
 from PySide6.QtCore import *  # type: ignore
 from PySide6.QtGui import *  # type: ignore
-from PySide6.QtWidgets import *
 from PySide6.QtWebEngineWidgets import *
-from PySide6.QtWebEngineCore import *
+from PySide6.QtWidgets import *
 
 from main import MainWindow
-
-import os
 
 
 class Ui_StackedWidget(object):

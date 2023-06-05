@@ -1,13 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from telas.telas_swap import Ui_StackedWidget
-from PySide6.QtCore import *
-from PySide6.QtGui import *
+from PySide6.QtCore import QRect, Qt
 from PySide6.QtWidgets import *
-from PySide6.QtCore import *
+
 from py_push_button import PyPushButton
 from telas.main_window import *
+from telas.telas_swap import Ui_StackedWidget
+
 
 class UI_MainWindow(object):
     def init_window(self, parent):

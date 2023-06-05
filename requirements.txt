@@ -1,7 +1,8 @@
-pyside6
-tweepy
-ijson
+pyside6~=6.5.1
+tweepy~=4.14.0
+ijson~=3.2.0.post0
 wordcloud
 matplotlib
 numpy
-twarc
+twarc~=2.14.0
+requests~=2.31.0
