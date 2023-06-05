@@ -40,7 +40,30 @@ def collect_tweets(args, twarc):
     arq.write("[\n")
     counter = 1
 
-    search_results = twarc.search_all(query=args.query, start_time=args.start_time, end_time=args.end_time, tweet_fields="attachments,created_at,lang,author_id,public_metrics,entities", max_results=args.maxtweets)
+    if 'lang:' not in args.query:
+        args.query = '(' + args.query + ')'
+        if args.language == 'pt and en':
+            args.query += ' (lang:pt OR lang:en)'
+        elif args.language != 'None':
+            args.query += ' lang:' + args.language
+
+    search_count = twarc.counts_all(args.query, start_time=args.start_time, end_time=args.end_time)
+    for page in search_count:
+        search_count = page['meta']['total_tweet_count']
+        break
+
+    if search_count == 0:
+        sys.stdout.write('\nThere are no tweets to collect. Finishing...')
+        return
+    elif search_count > args.maxtweets:
+        sys.stdout.write('\nThe search resulted aproximately in %i tweets. Collecting %i of them...' % (
+        search_count, args.maxtweets))
+    else:
+        sys.stdout.write('\nThe search resulted aproximately in %i tweets. Collecting all of them...' % search_count)
+
+    search_results = twarc.search_all(query=args.query, start_time=args.start_time, end_time=args.end_time,
+                                      tweet_fields="attachments,created_at,lang,author_id,public_metrics,entities",
+                                      max_results=500)
 
     for page in search_results:
         for tweet in ensure_flattened(page):
@@ -52,17 +75,23 @@ def collect_tweets(args, twarc):
             rt_count = tweet['public_metrics']['retweet_count']
 
             urls = []
-            if tweet['entities'] is not None and 'urls' in tweet['entities']:
-                for url in tweet['entities']['urls']:
-                    urls.append(url['url'])
-
             people_cited = []
-            if tweet['entities'] is not None and 'annotations' in tweet['entities']:
-                for annotation in tweet['entities']['annotations']:
-                    if annotation['type'] == 'Person':
-                        people_cited.append(annotation['normalized_text'])
+            probability = 0.70  # add entities with 70% probability or more to be a person
 
-            has_rich_media = tweet['attachments'] is not None and 'media_keys' in tweet['attachments']
+            if 'entities' in tweet:
+                if 'urls' in tweet['entities']:
+                    for url in tweet['entities']['urls']:
+                        urls.append(url['url'])
+
+                if 'annotations' in tweet['entities']:
+                    for annotation in tweet['entities']['annotations']:
+                        if annotation['type'] == 'Person' and annotation['probability'] >= probability:
+                            people_cited.append(annotation['normalized_text'])
+
+            has_rich_media = False
+            if 'attachments' in tweet:
+                if 'media_keys' in tweet['attachments'] or 'poll_ids' in tweet['attachments']:
+                    has_rich_media = True
 
             line = {
                 'id': tweet_id,
