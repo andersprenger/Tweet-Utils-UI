@@ -1,24 +1,28 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import sys
 import argparse
 import json
 import csv
 import pathlib
 
-sys.path.append("..")
-
 from modules.loader import Loader
 from modules.cleaner import TweetCleaner
 
+sys.path.append("..")
+
+
 def add_args():
-    parser = argparse.ArgumentParser(description='Removes stopwords, non-twitter symbols, URLs, and emoji from JSON datasets.')
-    parser.add_argument('-i', '--infile', metavar='', required=True, help='Input JSON file to be cleaned. Has to contain a key named text')
-    parser.add_argument('-o', '--outfile', metavar='', default='output_clean.json', help='Filename for the resulting output. Default is "output_clean" in the input file extension format')
-    parser.add_argument('-s', '--stopwords', metavar='', nargs='+', default = ['./stopwords/stopwords_en.txt'], help='Filename (or path) for the list of stopwords. Default is "stopwords/stopwords_en.txt"')
+    parser = argparse.ArgumentParser(
+        description='Removes stopwords, non-twitter symbols, URLs, and emoji from JSON datasets.')
+    parser.add_argument('-i', '--infile', metavar='', required=True,
+                        help='Input JSON file to be cleaned. Has to contain a key named text')
+    parser.add_argument('-o', '--outfile', metavar='', default='output_clean.json',
+                        help='Filename for the resulting output. Default is "output_clean" in the input file '
+                             'extension format')
+    parser.add_argument('-s', '--stopwords', metavar='', nargs='+', default=['./stopwords/stopwords_en.txt'],
+                        help='Filename (or path) for the list of stopwords. Default is "stopwords/stopwords_en.txt"')
     parser.add_argument('-e', '--emoji', action="store_true", help='Remove emoji contained in the input file')
-    parser.add_argument('-rt', '--removeRT', action="store_true", help='Exclude tweets deemed as retweets from the input file (e.g tweets starting with \"RT @\")')
+    parser.add_argument('-rt', '--removeRT', action="store_true",
+                        help='Exclude tweets deemed as retweets from the input file (e.g tweets starting with \"RT @\")')
     return parser.parse_args()
 
 
@@ -28,6 +32,7 @@ def write_json(outfile, data):
         f.write(json_string)
     sys.stdout.write('All done. File written to ' + outfile)
 
+
 def write_csv(outfile, data):
     keys = data[0].keys()
     with open(outfile, 'w', encoding='utf8') as f:
@@ -35,6 +40,7 @@ def write_csv(outfile, data):
         dict_writer.writeheader()
         dict_writer.writerows(data)
     sys.stdout.write('All done. File written to ' + outfile)
+
 
 def write_file(infile, outfile, data):
     if outfile != 'output_clean.json':
@@ -50,21 +56,22 @@ def write_file(infile, outfile, data):
     else:
         sys.stdout.write('Output file must be in CSV or JSON format\nQuitting...')
 
+
 def sanitize(infile, outfile, stopwords, emoji, rt):
-    #initialize cleaner and load stopwords
+    # initialize cleaner and load stopwords
 
     cleaner = TweetCleaner()
     stopwords = cleaner.load_stopwords(stopwords)
 
-    #read file with loader module
+    # read file with loader module
     loader = Loader()
     items = loader.read_file(infile)
 
-    #remove stopwords and emoji from tweets
+    # remove stopwords and emoji from tweets
     new_items = []
     for tweet in items:
         if rt and tweet['text'][:4] == 'RT @':
-            #cleaner.remove_rts(items, tweet)
+            # cleaner.remove_rts(items, tweet)
             continue
 
         tweet['text'] = cleaner.standardize_quotes(tweet['text'])
@@ -86,6 +93,5 @@ def main():
     sanitize(args.infile, args.outfile, args.stopwords, args.emoji, args.removeRT)
 
 
-
-if __name__== "__main__":
+if __name__ == "__main__":
     main()
