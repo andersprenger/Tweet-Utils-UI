@@ -40,13 +40,29 @@ def write_file(infile, outfile, data):
 
 
 def predict(infile, outfile):
+    print('Loading model...')
     classifier = SentimentClassifier()
 
+    print('Loading data...')
     with open(infile, 'r', encoding='utf8') as f:
         data = json.load(f)
 
-    output = classifier.predict(data)
-    write_file(infile, outfile, output)
+    for index in range(len(data)):
+        print('Processing tweet ' + str(index + 1) + ' of ' + str(len(data)))
+        temp = data[index]
+
+        temp_request = classifier.predict(temp)
+        sentiment = temp_request['results']
+
+        if sentiment == 1:
+            temp['emotion'] = 'positive'
+        if sentiment == 0:
+            temp['emotion'] = 'neutral'
+        if sentiment == 2:
+            temp['emotion'] = 'negative'
+        data[index] = temp
+
+    write_file(infile, outfile, data)
 
 
 def main():

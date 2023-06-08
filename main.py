@@ -119,7 +119,7 @@ class MainWindow(QMainWindow):
             args.append("-o")
             if self.ui.ui_pages.sentiment_analysis_output.text().strip() != "":
                 args.append(self.getPath("gathering") +
-                            self.ui.ui_pages.sanitize_tweets_output.text())
+                            self.ui.ui_pages.sentiment_analysis_output.text())
 
             else:
                 args.append(self.getPath("gathering") + 'output_sentiments.json')
@@ -273,6 +273,10 @@ class MainWindow(QMainWindow):
         if screen == self.ui.ui_pages.quick_report:
             self.ui.ui_pages.quick_report_input.clear()
             self.ui.ui_pages.quick_report_input.addItems(self.ui.ui_pages.showFilesInput())
+
+        if screen == self.ui.ui_pages.sentiment_analysis:
+            self.ui.ui_pages.sentiment_analysis_input.clear()
+            self.ui.ui_pages.sentiment_analysis_input.addItems(self.ui.ui_pages.showFilesInput())
 
         if screen == self.ui.ui_pages.newViz:
             self.ui.ui_pages.newViz_lineplot_input.clear()

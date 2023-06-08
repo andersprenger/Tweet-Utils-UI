@@ -12,6 +12,7 @@
 # - Multinomial Naive Bayes
 # - Support Vector Machine
 #
+import os
 
 import pandas as pd
 from nltk.tokenize import TweetTokenizer
@@ -41,7 +42,7 @@ class SentimentClassifier:
     # Função para treinar os classificadores de sentimento...
     def train_sentiment_classifiers(self):
         # Carregando o dataset de treinamento...
-        generalTrainingData = pd.read_excel('/scripts/modules/dataset.xlsx', engine='openpyxl').fillna(' ')
+        generalTrainingData = pd.read_excel('dataset.xlsx', engine='openpyxl').fillna(' ')
 
         # Preparando os dados para o treinamento do modelo...
         positiveNegativeTrainData = generalTrainingData[generalTrainingData['SentimentoFinal'] != 0]
@@ -87,11 +88,11 @@ class SentimentClassifier:
         finalResult = []
 
         # Verificando o resultado da classificação...
-        if resultPositiveNeutral == 0 and resultNegativeNeutral == 0:
+        if (resultPositiveNeutral == 0).any() and (resultNegativeNeutral == 0).any():
             finalResult.append(0)
-        elif resultPositiveNeutral == 1 and resultPositiveNegative == 1:
+        elif (resultPositiveNeutral == 1).any() and (resultPositiveNegative == 1).any():
             finalResult.append(1)
-        elif resultNegativeNeutral == 2 and resultPositiveNegative == 2:
+        elif (resultNegativeNeutral == 2).any() and (resultPositiveNegative == 2).any():
             finalResult.append(2)
         else:
             finalResult.append(0)
