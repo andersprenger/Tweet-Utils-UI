@@ -41,8 +41,7 @@ class SentimentClassifier:
     # Função para treinar os classificadores de sentimento...
     def train_sentiment_classifiers(self):
         # Carregando o dataset de treinamento...
-        generalTrainingData = pd.read_excel('dataset.xlsx', engine='openpyxl').fillna(
-            ' ')
+        generalTrainingData = pd.read_excel('/scripts/modules/dataset.xlsx', engine='openpyxl').fillna(' ')
 
         # Preparando os dados para o treinamento do modelo...
         positiveNegativeTrainData = generalTrainingData[generalTrainingData['SentimentoFinal'] != 0]
