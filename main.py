@@ -26,6 +26,8 @@ class MainWindow(QMainWindow):
         self.ui.botao_home.clicked.connect(lambda: self.changeScreen(self.ui.ui_pages.home, self.ui.botao_home))
         self.ui.botaoMenu_Quick_report.clicked.connect(
             lambda: self.changeScreen(self.ui.ui_pages.quick_report, self.ui.botaoMenu_Quick_report))
+        self.ui.botaoMenu_Sentiment_Analysis.clicked.connect(
+            lambda: self.changeScreen(self.ui.ui_pages.sentiment_analysis, self.ui.botaoMenu_Sentiment_Analysis))
         self.ui.botaoMenu_Rest_gathering.clicked.connect(
             lambda: self.changeScreen(self.ui.ui_pages.rest_gathering, self.ui.botaoMenu_Rest_gathering))
         self.ui.botaoMenu_Sanitize_tweets.clicked.connect(
