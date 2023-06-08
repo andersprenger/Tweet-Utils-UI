@@ -742,7 +742,7 @@ class Ui_StackedWidget(object):
 
             * Input: Filename for the input JSON.
 
-            * Output: Filename for the resulting output. The default is "<input name without extension>_sentiment.json".
+            * Output: Filename for the resulting output. The default is "output_sentiments.json".
         """)
 
         self.sentiment_analysis_input.addItems(self.showFilesInput())
