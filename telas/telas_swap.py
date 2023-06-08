@@ -632,6 +632,127 @@ class Ui_StackedWidget(object):
 
         ###############################################################
         ##                                                           ##
+        ##  SENTIMENT ANALYSIS                                       ##
+        ##                                                           ##
+        ###############################################################
+        self.sentiment_analysis = QWidget()
+        self.sentiment_analysis.setObjectName(u"sentiment_analysis")
+        self.sentiment_analysis.setStyleSheet("background-color: #1B2542")
+
+        self.sentiment_analysis_runButton = QPushButton(self.sentiment_analysis)
+        self.sentiment_analysis_runButton.setObjectName(u"sentiment_analysis_runButton")
+        self.sentiment_analysis_runButton.setStyleSheet("""
+            border-radius: 10px;
+            background-color: #8321FF;
+            color: white;
+            font-weight: 700;
+            font-family: 'Montserrat';
+            font-size: 24px;""")
+        self.sentiment_analysis_runButton.setGeometry(QRect(687, 299, 131, 55))
+
+        self.sentiment_analysis_label_input = QLabel(self.sentiment_analysis)
+        self.sentiment_analysis_label_input.setObjectName(
+            u"sentiment_analysis_label_input")
+        self.sentiment_analysis_label_input.setStyleSheet(
+            "color: white; font-family: 'Montserrat'; font-size: 24px;")
+        self.sentiment_analysis_label_input.setGeometry(QRect(168, 198, 78, 29))
+
+        self.sentiment_analysis_label_output = QLabel(self.sentiment_analysis)
+        self.sentiment_analysis_label_output.setObjectName(u"sentiment_analysis_label_output")
+        self.sentiment_analysis_label_output.setStyleSheet("""
+            color: white;
+            font-family: 'Montserrat';
+            font-size: 24px;""")
+        self.sentiment_analysis_label_output.setGeometry(QRect(518, 198, 221, 29))
+
+        self.sentiment_analysis_title = QLabel(self.sentiment_analysis)
+        self.sentiment_analysis_title.setObjectName(u"sentiment_analysis_title")
+        self.sentiment_analysis_title.setStyleSheet(
+            "color: white; font-family: 'Montserrat'; font-weight: 700; font-size: 36px; line-height: 44px;")
+        self.sentiment_analysis_title.setGeometry(QRect(285, 100, 415, 45))
+
+        self.sentiment_analysis_input = QComboBox(self.sentiment_analysis)
+        self.sentiment_analysis_input.setObjectName(u"sentiment_analysis_input")
+        self.sentiment_analysis_input.setStyleSheet(u"""
+            QComboBox {
+                background-color: #ffffff;
+                border-style: solid;
+                border-color: #ffffff;
+                color: black;
+                font-family: 'Montserrat';
+            }
+
+            QComboBox QAbstractItemView {
+                background-color: white;
+                color: black;
+                font-family: 'Montserrat';
+            }
+
+            QComboBox::drop-down {
+                background-color: #10121A;
+                width: 24px;
+                height: 54px;
+            }
+
+            QComboBox::down-arrow {
+                image: url(./icones/arrow_down.png);
+            }
+            """)
+        self.sentiment_analysis_input.setGeometry(QRect(168, 227, 300, 48))
+
+        self.sentiment_analysis_output = QLineEdit(self.sentiment_analysis)
+        self.sentiment_analysis_output.setObjectName(u"sentiment_analysis_output")
+        self.sentiment_analysis_output.setStyleSheet(
+            "background-color: #ffffff; border-style: solid; color: black; font-family: 'Montserrat';")
+        self.sentiment_analysis_output.setGeometry(QRect(518, 227, 300, 48))
+
+        self.sentiment_analysis_displayOutput = QTextBrowser(self.sentiment_analysis)
+        self.sentiment_analysis_displayOutput.setStyleSheet(
+            "background-color: #10121A; border-style: solid; border-color: #10121A; border-radius: 10px; color: white; font-family: 'Montserrat'")
+        self.sentiment_analysis_displayOutput.setObjectName(
+            u"sentiment_analysis_displayOutput")
+        self.sentiment_analysis_displayOutput.setGeometry(QRect(168, 378, 650, 281))
+
+        self.sentiment_analysis_helpButton = QPushButton(self.sentiment_analysis)
+        self.sentiment_analysis_helpButton.setObjectName(u"sentiment_analysis_helpButton")
+        self.sentiment_analysis_helpButton.setGeometry(QRect(911, 646, 60, 60))
+        self.sentiment_analysis_helpButton.setMask(QRegion(QRect(0,0,58,58), QRegion.Ellipse))
+        self.sentiment_analysis_helpButton.setStyleSheet("""
+            border-radius: 1px;
+            background-color: #8321FF;
+            font-weight: 700;
+            font-family: 'Montserrat';
+            color: white;
+            font-size: 24px;
+        """)
+
+        self.sentiment_analysis_infoboard = QTextBrowser(self.sentiment_analysis)
+        self.sentiment_analysis_infoboard.setObjectName(u"sentiment_analysis_infoboard")
+        self.sentiment_analysis_infoboard.setGeometry(QRect(160, 150, 665, 520))
+        self.sentiment_analysis_infoboard.setStyleSheet("""
+            border-style: solid;
+            background-color: #1B2542;
+            border-color: #1B2542;
+            color: white;
+            font-family: 'Montserrat'
+        """)
+
+        self.sentiment_analysis_infoboard.setText("""
+        Generates a summary of the data contained in a Tweet dataset
+
+            * Input: Filename for the input JSON.
+
+            * Output: Filename for the resulting output. The default is "output_sentiments.json".
+        """)
+
+        self.sentiment_analysis_input.addItems(self.showFilesInput())
+        self.sentiment_analysis_infoboard.setHidden(True)
+        self.sentiment_analysis_helpButton.clicked.connect(lambda: self.sentiment_analysis_infoboard.setHidden(not self.sentiment_analysis_infoboard.isHidden()))
+
+        StackedWidget.addWidget(self.sentiment_analysis)
+
+        ###############################################################
+        ##                                                           ##
         ##  SANITIZE TWEETS                                          ##
         ##                                                           ##
         ###############################################################
@@ -1345,6 +1466,14 @@ class Ui_StackedWidget(object):
             "StackedWidget", u"QUICK REPORT", None))
         self.quick_report_display_count_label.setText(
             QCoreApplication.translate("StackedWidget", u"Display Counts", None))
+        self.sentiment_analysis_runButton.setText(
+            QCoreApplication.translate("StackedWidget", u"RUN", None))
+        self.sentiment_analysis_label_input.setText(
+            QCoreApplication.translate("StackedWidget", u"Input", None))
+        self.sentiment_analysis_label_output.setText(
+            QCoreApplication.translate("StackedWidget", u"Output", None))
+        self.sentiment_analysis_title.setText(QCoreApplication.translate(
+            "StackedWidget", u"SENTIMENT ANALYSIS", None))
         self.sanitize_tweets_title.setText(QCoreApplication.translate(
             "StackedWidget", u"SANITIZE TWEETS", None))
         self.sanitize_tweets_input_label.setText(
@@ -1413,5 +1542,6 @@ class Ui_StackedWidget(object):
         self.sanitize_tweets_helpButton.setText(QCoreApplication.translate("StackedWidget", u"?", None))
         self.rest_gathering_helpButton.setText(QCoreApplication.translate("StackedWidget", u"?", None))
         self.quick_report_helpButton.setText(QCoreApplication.translate("StackedWidget", u"?", None))
+        self.sentiment_analysis_helpButton.setText(QCoreApplication.translate("StackedWidget", u"?", None))
         self.home_helpButton.setText(QCoreApplication.translate("StackedWidget", u"?", None))
     # retranslateUi

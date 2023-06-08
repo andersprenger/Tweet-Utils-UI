@@ -6,3 +6,6 @@ matplotlib
 numpy
 twarc~=2.14.0
 requests~=2.31.0
+pandas
+nltk
+sklearn

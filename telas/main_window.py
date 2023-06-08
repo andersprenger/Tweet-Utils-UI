@@ -76,6 +76,7 @@ class UI_MainWindow(object):
         self.botaoMenu_Gather_profile = PyPushButton(text="Gather Profile", text_color="#ffffff", btn_pressed="#0C0C0C", btn_color="#0C0C0C")
         self.botaoMenu_Sanitize_tweets = PyPushButton(text="Sanitize Tweets", text_color="#ffffff", btn_pressed="#0C0C0C", btn_color="#0C0C0C")
         self.botaoMenu_Quick_report = PyPushButton(text="Quick Report", text_color="#ffffff", btn_pressed="#0C0C0C", btn_color="#0C0C0C")
+        self.botaoMenu_Sentiment_Analysis = PyPushButton(text="Sentiments", text_color="#ffffff", btn_pressed="#0C0C0C", btn_color="#0C0C0C")
         self.botaoMenu_newVisualizacao = PyPushButton(text="Visualizations", text_color="#ffffff", btn_pressed="#0C0C0C", btn_color="#0C0C0C")
         self.botaoMenu_dashboard = PyPushButton(text="Dashboard", text_color="#ffffff", btn_pressed="#0C0C0C", btn_color="#0C0C0C")
 
@@ -88,6 +89,7 @@ class UI_MainWindow(object):
         self.access_bar_layout.addWidget(self.botaoMenu_Gather_profile)
         self.access_bar_layout.addWidget(self.botaoMenu_Sanitize_tweets)
         self.access_bar_layout.addWidget(self.botaoMenu_Quick_report)
+        self.access_bar_layout.addWidget(self.botaoMenu_Sentiment_Analysis)
         self.access_bar_layout.addWidget(self.botaoMenu_newVisualizacao)
         self.access_bar_layout.addWidget(self.botaoMenu_dashboard)
 

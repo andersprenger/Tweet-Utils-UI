@@ -26,6 +26,8 @@ class MainWindow(QMainWindow):
         self.ui.botao_home.clicked.connect(lambda: self.changeScreen(self.ui.ui_pages.home, self.ui.botao_home))
         self.ui.botaoMenu_Quick_report.clicked.connect(
             lambda: self.changeScreen(self.ui.ui_pages.quick_report, self.ui.botaoMenu_Quick_report))
+        self.ui.botaoMenu_Sentiment_Analysis.clicked.connect(
+            lambda: self.changeScreen(self.ui.ui_pages.sentiment_analysis, self.ui.botaoMenu_Sentiment_Analysis))
         self.ui.botaoMenu_Rest_gathering.clicked.connect(
             lambda: self.changeScreen(self.ui.ui_pages.rest_gathering, self.ui.botaoMenu_Rest_gathering))
         self.ui.botaoMenu_Sanitize_tweets.clicked.connect(
@@ -38,8 +40,8 @@ class MainWindow(QMainWindow):
             lambda: self.changeScreen(self.ui.ui_pages.dashboard, self.ui.botaoMenu_dashboard))
 
         self.ui.botao_home.set_active(True)
-        self.buttons = [self.ui.botao_home, self.ui.botaoMenu_Quick_report, self.ui.botaoMenu_Rest_gathering,
-                        self.ui.botaoMenu_Sanitize_tweets,
+        self.buttons = [self.ui.botao_home, self.ui.botaoMenu_Quick_report, self.ui.botaoMenu_Sentiment_Analysis,
+                        self.ui.botaoMenu_Rest_gathering, self.ui.botaoMenu_Sanitize_tweets,
                         self.ui.botaoMenu_Gather_profile, self.ui.botaoMenu_newVisualizacao,
                         self.ui.botaoMenu_dashboard]
 
@@ -47,6 +49,8 @@ class MainWindow(QMainWindow):
         # seja, a "runScriptModel" com seus parâmetros).
         self.ui.ui_pages.quick_report_runButton.clicked.connect(lambda: self.runScriptModel(
             self.ui.ui_pages.quick_report_displayOutput, "quick_report.py"))
+        self.ui.ui_pages.sentiment_analysis_runButton.clicked.connect(lambda: self.runScriptModel(
+            self.ui.ui_pages.sentiment_analysis_displayOutput, "sentiment_analysis.py"))
         self.ui.ui_pages.rest_gathering_runButton.clicked.connect(lambda: self.runScriptModel(
             self.ui.ui_pages.rest_gathering_displayOutput, "rest_gathering.py"))
         self.ui.ui_pages.sanitize_tweets_runButton.clicked.connect(lambda: self.runScriptModel(
@@ -103,6 +107,22 @@ class MainWindow(QMainWindow):
 
             args.append("-dc")
             args.append(self.ui.ui_pages.quick_report_display_count.text())
+
+            self.teste.start(NAME_PYTHON, args)
+
+        elif script == "sentiment_analysis.py":
+            args = [self.getPath("scripts") + script]
+            args.append("-i")
+            args.append(self.getPath("gathering") +
+                        self.ui.ui_pages.sentiment_analysis_input.currentText())
+
+            args.append("-o")
+            if self.ui.ui_pages.sentiment_analysis_output.text().strip() != "":
+                args.append(self.getPath("gathering") +
+                            self.ui.ui_pages.sentiment_analysis_output.text())
+
+            else:
+                args.append(self.getPath("gathering") + 'output_sentiments.json')
 
             self.teste.start(NAME_PYTHON, args)
 
@@ -253,6 +273,10 @@ class MainWindow(QMainWindow):
         if screen == self.ui.ui_pages.quick_report:
             self.ui.ui_pages.quick_report_input.clear()
             self.ui.ui_pages.quick_report_input.addItems(self.ui.ui_pages.showFilesInput())
+
+        if screen == self.ui.ui_pages.sentiment_analysis:
+            self.ui.ui_pages.sentiment_analysis_input.clear()
+            self.ui.ui_pages.sentiment_analysis_input.addItems(self.ui.ui_pages.showFilesInput())
 
         if screen == self.ui.ui_pages.newViz:
             self.ui.ui_pages.newViz_lineplot_input.clear()
