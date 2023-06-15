@@ -30,7 +30,7 @@ for e in args:
     filename = aux[1]
 
     if style_graph == 'lineplot':
-        arr, arr2 = getValuesLineplot(filename)
+        tempo, Positivos, Neutros, Negativos = getValuesLineplot(filename)
 
         script = """
         let trace = {}
@@ -38,7 +38,27 @@ for e in args:
             y: {},
             mode: 'lines',
             line: {}
+                color: 'green',
+                width: 1
+            {}
+        {};
+
+        let trace = {}
+            x: {},
+            y: {},
+            mode: 'lines',
+            line: {}
                 color: 'rgb(255, 255, 255)',
+                width: 1
+            {}
+        {};
+
+        let trace = {}
+            x: {},
+            y: {},
+            mode: 'lines',
+            line: {}
+                color: 'red',
                 width: 1
             {}
         {};
@@ -84,7 +104,7 @@ for e in args:
         {};
 
         Plotly.newPlot('lineplot', [trace], layout);
-        """.format('{', arr, arr2, '{', '}', '}', '{', '{', filename.split(os.sep)[-1], '{', '}', '}', '{', '{', '}', '}', '{', '{', '}', '}', '}')
+        """.format('{', tempo, Positivos, Neutros, Negativos, '{', '}', '}', '{', '{', filename.split(os.sep)[-1], '{', '}', '}', '{', '{', '}', '}', '{', '{', '}', '}', '}')
 
         script_graphs.append(script)
 
