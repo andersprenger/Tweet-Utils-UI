@@ -59,47 +59,6 @@ def getValuesLineplot(filename):
     return ex, eyPositivo, eyNeutro, eyNegativo
 
 
-
-
-
-
-
-
-def getValuesLineplot(filename):
-    # args = add_args()
-    # args.input
-
-    # Lê o JSON e insere na lista data os tweets
-    with open(filename, 'r', encoding='utf8') as f:
-        objects = ijson.items(f, 'item')
-        data = list(objects)
-
-    # Adiciona ao array horarios os instantes de postagens dos tweets para criar a linha do tempo 
-    horarios = []
-    for i in range(len(data) - 1, -1, -1):
-        horarios.append(datetime.strptime(data[i]['created_at'], '%Y-%m-%dT%H:%M:%SZ'))
-
-    ex = []
-    ey= []
-
-    count = 0
-    started_time = horarios[0]
-    started_time += timedelta(seconds=1)
-    for i in range(len(horarios)):
-        if horarios[i] >= started_time:
-            ey.append(count)
-            started_time = horarios[i]
-            ex.append(datetime.strftime(started_time, '%Y-%m-%dT%H:%M:%SZ'))
-            started_time += timedelta(seconds=1)
-            count = 1
-
-        else:
-            count += 1
-
-    print('Lineplot criado.')
-    return ex, ey
-
-
 def getValuesHeatmap(filename):
     with open(filename, 'r', encoding='utf8') as f:
         objects = ijson.items(f, 'item')
