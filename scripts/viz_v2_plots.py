@@ -53,12 +53,12 @@ def getValuesLineplot(filename):
     dfSentimentos['created_at'] = pd.to_datetime(dfSentimentos['created_at'])
     dfAgrupadoSentimentos = dfSentimentos.groupby(['created_at']).sum().reset_index()
 
-    ex = dfSentimentos['created_at']
-    eyPositivo = dfSentimentos['Positive']
-    eyNeutral = dfSentimentos['Neutral']
-    eyNegative = dfSentimentos['Negative']
+    ex = dfAgrupadoSentimentos['created_at']
+    eyPositive = dfAgrupadoSentimentos['Positive']
+    eyNeutral = dfAgrupadoSentimentos['Neutral']
+    eyNegative = dfAgrupadoSentimentos['Negative']
 
-    return ex, eyPositivo, eyNeutral, eyNegative
+    return ex, eyPositive, eyNeutral, eyNegative
 
 
 def getValuesHeatmap(filename):
