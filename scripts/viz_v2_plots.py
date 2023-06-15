@@ -13,7 +13,6 @@ import json
 #    parser.add_argument('-i', '--input', metavar='', required=True)
 #    return parser.parse_args()
 def getValuesLineplot(filename):
-
     data = []
     tempo = []
     contagemPositivo = []
@@ -22,24 +21,27 @@ def getValuesLineplot(filename):
 
     with open(filename, encoding='utf-8') as file:
         data = json.load(file)
-    
-    
+
     for objeto in data:
         tempo.append(objeto['created_at'])
-        
-        if objeto['emotion'] == 'positivo':
+
+        if objeto['emotion'] == 'positive':
             contagemPositivo.append(1)
             contagemNegativo.append(0)
             contagemNeutro.append(0)
-        elif objeto['emotion'] == 'negativo':
+        elif objeto['emotion'] == 'negative':
             contagemPositivo.append(0)
             contagemNegativo.append(1)
             contagemNeutro.append(0)
-        elif objeto['emotion'] == 'neutro':
+        elif objeto['emotion'] == 'neutral':
             contagemPositivo.append(0)
             contagemNegativo.append(0)
             contagemNeutro.append(1)
-        
+
+    print("contagemTempo: ", len(tempo))
+    print("contagemPositivo: ", len(contagemPositivo))
+    print("contagemNeutro: ", len(contagemNeutro))
+    print("contagemNegativo: ", len(contagemNegativo))
 
     dfSentimentos = pd.DataFrame({
         'Positive': contagemPositivo,
@@ -56,7 +58,7 @@ def getValuesLineplot(filename):
     eyNeutral = dfSentimentos['Neutral']
     eyNegative = dfSentimentos['Negative']
 
-    return ex, eyPositivo, eyNeutro, eyNegativo
+    return ex, eyPositivo, eyNeutral, eyNegative
 
 
 def getValuesHeatmap(filename):
