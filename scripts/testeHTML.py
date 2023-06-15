@@ -30,7 +30,14 @@ for e in args:
     filename = aux[1]
 
     if style_graph == 'lineplot':
-        tempo, Positivos, Neutros, Negativos = getValuesLineplot(filename)
+        tempo, positivos, neutros, negativos = getValuesLineplot(filename)
+        # x = getValuesLineplot(filename)
+        #
+        # print('tempo: ', tempo)
+        # print('positivos: ', positivos)
+        # print('neutros: ', neutros)
+        # print('negativos: ', negativos)
+        # print('x: ', x)
 
         script = """
         let trace = {}
@@ -43,7 +50,7 @@ for e in args:
             {}
         {};
 
-        let trace = {}
+        let trace1 = {}
             x: {},
             y: {},
             mode: 'lines',
@@ -53,7 +60,7 @@ for e in args:
             {}
         {};
 
-        let trace = {}
+        let trace2 = {}
             x: {},
             y: {},
             mode: 'lines',
@@ -102,9 +109,11 @@ for e in args:
                 {}
             {}
         {};
+        
+        let array = [trace, trace1, trace2];
 
-        Plotly.newPlot('lineplot', [trace], layout);
-        """.format('{', tempo, Positivos, Neutros, Negativos, '{', '}', '}', '{', '{', filename.split(os.sep)[-1], '{', '}', '}', '{', '{', '}', '}', '{', '{', '}', '}', '}')
+        Plotly.newPlot('lineplot', array, layout);
+""".format('{', tempo, positivos, '{', '}', '}', '{', tempo, neutros, '{', '}', '}', '{', tempo, negativos, '{', '}', '}', '{', '{', filename.split(os.sep)[-1], '{', '}', '}', '{', '{', '}', '}', '{', '{', '}', '}', '}')
 
         script_graphs.append(script)
 

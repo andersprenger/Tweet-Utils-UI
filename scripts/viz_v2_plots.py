@@ -12,6 +12,38 @@ import json
 #    parser = argparse.ArgumentParser(description='Lineplot Viz 2.0')
 #    parser.add_argument('-i', '--input', metavar='', required=True)
 #    return parser.parse_args()
+
+def old_getValuesLineplot(filename):
+    # args = add_args()
+    # args.input
+    with open(filename, 'r', encoding='utf8') as f:
+        objects = ijson.items(f, 'item')
+        data = list(objects)
+
+    horarios = []
+    for i in range(len(data) - 1, -1, -1):
+        horarios.append(datetime.strptime(data[i]['created_at'], '%Y-%m-%dT%H:%M:%SZ'))
+
+    ex = []
+    ey = []
+
+    count = 0
+    started_time = horarios[0]
+    started_time += timedelta(seconds=1)
+    for i in range(len(horarios)):
+        if horarios[i] >= started_time:
+            ey.append(count)
+            started_time = horarios[i]
+            ex.append(datetime.strftime(started_time, '%Y-%m-%dT%H:%M:%SZ'))
+            started_time += timedelta(seconds=1)
+            count = 1
+
+        else:
+            count += 1
+
+    print('Lineplot criado.')
+    return ex, ey
+
 def getValuesLineplot(filename):
     data = []
     tempo = []
@@ -38,11 +70,6 @@ def getValuesLineplot(filename):
             contagemNegativo.append(0)
             contagemNeutro.append(1)
 
-    print("contagemTempo: ", len(tempo))
-    print("contagemPositivo: ", len(contagemPositivo))
-    print("contagemNeutro: ", len(contagemNeutro))
-    print("contagemNegativo: ", len(contagemNegativo))
-
     dfSentimentos = pd.DataFrame({
         'Positive': contagemPositivo,
         'Neutral': contagemNeutro,
@@ -50,8 +77,11 @@ def getValuesLineplot(filename):
         'created_at': tempo
     })
 
-    dfSentimentos['created_at'] = pd.to_datetime(dfSentimentos['created_at'])
+    # print('dfSentimentos_antes', dfSentimentos)
+    dfSentimentos['created_at'] = pd.to_datetime(dfSentimentos['created_at'], errors='coerce')
+    print('dfSentimentos', dfSentimentos)
     dfAgrupadoSentimentos = dfSentimentos.groupby(['created_at']).sum().reset_index()
+    print('dfAgrupadoSentimentos', dfAgrupadoSentimentos)
 
     ex = dfAgrupadoSentimentos['created_at']
     eyPositive = dfAgrupadoSentimentos['Positive']
