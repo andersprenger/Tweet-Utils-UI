@@ -4,26 +4,83 @@ from operator import itemgetter
 from datetime import datetime, timedelta
 from sanitize_tweets import sanitize
 from quick_report import report
+import pandas as pd
+import json
 
 
 # def add_args():
 #    parser = argparse.ArgumentParser(description='Lineplot Viz 2.0')
 #    parser.add_argument('-i', '--input', metavar='', required=True)
 #    return parser.parse_args()
+def getValuesLineplot(filename):
+
+    data = []
+    tempo = []
+    contagemPositivo = []
+    contagemNeutro = []
+    contagemNegativo = []
+
+    with open(filename, encoding='utf-8') as file:
+        data = json.load(file)
+    
+    
+    for objeto in data:
+        tempo.append(objeto['created_at'])
+        
+        if objeto['emotion'] == 'positivo':
+            contagemPositivo.append(1)
+            contagemNegativo.append(0)
+            contagemNeutro.append(0)
+        elif objeto['emotion'] == 'negativo':
+            contagemPositivo.append(0)
+            contagemNegativo.append(1)
+            contagemNeutro.append(0)
+        elif objeto['emotion'] == 'neutro':
+            contagemPositivo.append(0)
+            contagemNegativo.append(0)
+            contagemNeutro.append(1)
+        
+
+    dfSentimentos = pd.DataFrame({
+        'Positive': contagemPositivo,
+        'Neutral': contagemNeutro,
+        'Negative': contagemNegativo,
+        'created_at': tempo
+    })
+
+    dfSentimentos['created_at'] = pd.to_datetime(dfSentimentos['created_at'])
+    dfAgrupadoSentimentos = dfSentimentos.groupby(['created_at']).sum().reset_index()
+
+    ex = dfSentimentos['created_at']
+    eyPositivo = dfSentimentos['Positive']
+    eyNeutral = dfSentimentos['Neutral']
+    eyNegative = dfSentimentos['Negative']
+
+    return ex, eyPositivo, eyNeutro, eyNegativo
+
+
+
+
+
+
+
 
 def getValuesLineplot(filename):
     # args = add_args()
     # args.input
+
+    # Lê o JSON e insere na lista data os tweets
     with open(filename, 'r', encoding='utf8') as f:
         objects = ijson.items(f, 'item')
         data = list(objects)
 
+    # Adiciona ao array horarios os instantes de postagens dos tweets para criar a linha do tempo 
     horarios = []
     for i in range(len(data) - 1, -1, -1):
         horarios.append(datetime.strptime(data[i]['created_at'], '%Y-%m-%dT%H:%M:%SZ'))
 
     ex = []
-    ey = []
+    ey= []
 
     count = 0
     started_time = horarios[0]
