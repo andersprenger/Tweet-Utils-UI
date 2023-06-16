@@ -20,12 +20,43 @@ def old_getValuesLineplot(filename):
         objects = ijson.items(f, 'item')
         data = list(objects)
 
+    positives = []
+    neutrals = []
+    negatives = []
+    arrayposition = 0
+
+    for i in range(len(data)):
+        if i == 0:
+            if data[i]['emotion'] == "Positive": positives[arrayposition] += 1
+            elif data[i]['emotion'] == "Neutral": neutrals[arrayposition] += 1
+            elif data[i]['emotion'] == "Negative": negatives[arrayposition] += 1
+
+        if i != 0:
+            newDate = data[i]['created_at']
+            oldDate = data[i - 1]['created_at']
+
+            if newDate == oldDate:
+                if data[i]['emotion'] == "Positive": positives[arrayposition] += 1
+                elif data[i]['emotion'] == "Neutral": neutrals[arrayposition] += 1
+                elif data[i]['emotion'] == "Negative": negatives[arrayposition] += 1
+
+            if newDate != oldDate:
+                arrayposition += 1
+                if data[i]['emotion'] == "Positive": positives[arrayposition] += 1
+                elif data[i]['emotion'] == "Neutral": neutrals[arrayposition] += 1
+                elif data[i]['emotion'] == "Negative": negatives[arrayposition] += 1
+
+
+    
     horarios = []
     for i in range(len(data) - 1, -1, -1):
         horarios.append(datetime.strptime(data[i]['created_at'], '%Y-%m-%dT%H:%M:%SZ'))
 
     ex = []
     ey = []
+    eyPositives = positives
+    eyNeutrals = neutrals
+    eyNegatives = negatives
 
     count = 0
     started_time = horarios[0]
@@ -42,7 +73,7 @@ def old_getValuesLineplot(filename):
             count += 1
 
     print('Lineplot criado.')
-    return ex, ey
+    return ex, eyPositives, eyNeutrals, eyNegatives
 
 def getValuesLineplot(filename):
     data = []
