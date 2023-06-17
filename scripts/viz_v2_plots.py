@@ -12,8 +12,6 @@ from quick_report import report
 #    return parser.parse_args()
 
 def getValuesLineplot(filename):
-    # args = add_args()
-    # args.input
     with open(filename, 'r', encoding='utf8') as f:
         objects = ijson.items(f, 'item')
         data = list(objects)
@@ -41,6 +39,39 @@ def getValuesLineplot(filename):
 
     print('Lineplot criado.')
     return ex, ey
+
+
+def getValueSentimentLineplot(filename, sentiment) -> (list[str], list[int]):
+    with open(filename, 'r', encoding='utf8') as f:
+        objects = ijson.items(f, 'item')
+        data = list(objects)
+
+        if 'emotion' not in data[0]:
+            raise RuntimeError('Emotion not found in file.')
+
+        times = []
+        for i in range(len(data) - 1, -1, -1):
+            times.append((datetime.strptime(data[i]['created_at'], '%Y-%m-%dT%H:%M:%SZ'), data[i]['emotion']))
+
+        xs = []
+        ys = []
+
+        count = 0
+        started_time = times[0][0]
+        started_time += timedelta(seconds=1)
+        for i in range(len(times)):
+            if times[i][0] >= started_time:
+                ys.append(count)
+                started_time = times[i][0]
+                xs.append(datetime.strftime(started_time, '%Y-%m-%dT%H:%M:%SZ'))
+                started_time += timedelta(seconds=1)
+                count = 1
+
+            elif times[i][1] == sentiment:
+                count += 1
+
+        print('Lineplot of ' + sentiment + ' sentiment created.')
+        return xs, ys
 
 
 def getValuesHeatmap(filename):

@@ -88,6 +88,97 @@ for e in args:
 
         script_graphs.append(script)
 
+    if style_graph == 'sentiments':
+        with open(filename, 'r', encoding='utf8') as f:
+            objects = ijson.items(f, 'item')
+            data = list(objects)
+
+        if 'emotion' in data[0]:
+            positiveX, positiveY = getValueSentimentLineplot(filename, 'positive')
+            negativeX, negativeY = getValueSentimentLineplot(filename, 'negative')
+            neutralX, neutralY = getValueSentimentLineplot(filename, 'neutral')
+
+            scriptX = """
+            let positive = {}
+                x: {},
+                y: {},
+                mode: 'lines',
+                line: {}
+                    color: 'rgb(128, 255, 0)',
+                    width: 1
+                {}
+            {};
+            
+            let negative = {}
+                x: {},
+                y: {},
+                mode: 'lines',
+                line: {}
+                    color: 'rgb(255, 0, 0)',
+                    width: 1
+                {}
+            {};
+            
+            let neutral = {}
+                x: {},
+                y: {},
+                mode: 'lines',
+                line: {}
+                    color: 'rgb(255, 255, 0)',
+                    width: 1
+                {}
+            {};
+            
+            let tracesX = [positive, negative, neutral];
+    
+            let layoutX = {}
+                title: {}
+                    text: '<b>Lineplot Sentiments ({})</b>',
+                    font: {}
+                        size: 36,
+                        color: 'white',
+                        family: 'Montserrat'
+                    {}
+                {},
+    
+                paper_bgcolor: 'rgb(27, 37, 66)',
+                plot_bgcolor: 'rgb(27, 37, 66)',
+    
+                xaxis: {}
+                    gridcolor: 'rgb(47, 64, 115)',
+                    gridwidth: 1,
+    
+                    zerolinecolor: 'rgb(47, 64, 115)',
+                    zerolinewidth: 1,
+    
+                    tickfont : {}
+                        size : 12,
+                        color : 'white'
+                    {}
+                {},
+    
+                yaxis: {}
+                    gridcolor: 'rgb(47, 64, 115)',
+                    gridwidth: 1,
+    
+                    zerolinecolor: 'rgb(47, 64, 115)',
+                    zerolinewidth: 1,
+    
+                    tickfont : {}
+                        size : 12,
+                        color : 'white'
+                    {}
+                {}
+            {};
+    
+            Plotly.newPlot('sentiments', tracesX, layoutX);
+            """.format('{', positiveX, positiveY, '{', '}', '}',
+                       '{', negativeX, negativeY, '{', '}', '}',
+                       '{', neutralX, neutralY, '{', '}', '}',
+                       '{', '{', filename.split(os.sep)[-1], '{', '}', '}', '{', '{', '}', '}', '{', '{', '}', '}', '}')
+
+            script_graphs.append(scriptX)
+
     if style_graph == 'heatmap':
         matrix, xLabel, yLabel = getValuesHeatmap(filename)
 
