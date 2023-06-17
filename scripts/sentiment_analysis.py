@@ -47,22 +47,31 @@ def predict(infile, outfile):
     with open(infile, 'r', encoding='utf8') as f:
         data = json.load(f)
 
-    for index in range(len(data)):
-        print('Processing tweet ' + str(index + 1) + ' of ' + str(len(data)))
-        temp = data[index]
+    new_data = []
 
-        temp_request = classifier.predict(temp)
+    count = 0
+    for tweet in data:
+        print('Processing tweet ' + str(count) + ' of ' + str(len(data)))
+        count += 1
+
+        temp_request = classifier.predict(tweet)
         sentiment = temp_request['results']
 
-        if sentiment == 1:
-            temp['emotion'] = 'positive'
-        if sentiment == 0:
-            temp['emotion'] = 'neutral'
-        if sentiment == 2:
-            temp['emotion'] = 'negative'
-        data[index] = temp
+        new_tweet = {}
 
-    write_file(infile, outfile, data)
+        for value in tweet:
+            new_tweet[value] = tweet[value][0]
+
+        if sentiment == 1:
+            new_tweet['emotion'] = 'positive'
+        if sentiment == 0:
+            new_tweet['emotion'] = 'neutral'
+        if sentiment == 2:
+            new_tweet['emotion'] = 'negative'
+
+        new_data.append(new_tweet)
+
+    write_file(infile, outfile, new_data)
 
 
 def main():

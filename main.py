@@ -213,6 +213,10 @@ class MainWindow(QMainWindow):
                 input_graphs.append("lineplot/" + self.getPath("gathering") +
                                     self.ui.ui_pages.newViz_lineplot_input.currentText())
 
+                # the presence of sentiments will be checked in the lineplot script
+                input_graphs.append("sentiments/" + self.getPath("gathering") +
+                                    self.ui.ui_pages.newViz_lineplot_input.currentText())
+
             if self.ui.ui_pages.newViz_heatmap_checkbox.isChecked():
                 input_graphs.append("heatmap/" + self.getPath("gathering") +
                                     self.ui.ui_pages.newViz_heatmap_input.currentText())

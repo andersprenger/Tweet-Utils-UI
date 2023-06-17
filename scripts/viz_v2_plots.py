@@ -51,9 +51,7 @@ def getValueSentimentLineplot(filename, sentiment) -> (list[str], list[int]):
 
         times = []
         for i in range(len(data) - 1, -1, -1):
-            # fix the bug that most values are in an array, then revert the commented line below
-            # times.append((datetime.strptime(data[i]['created_at'], '%Y-%m-%dT%H:%M:%SZ'), data[i]['emotion']))
-            times.append((datetime.strptime(data[i]['created_at'][0], '%Y-%m-%dT%H:%M:%SZ'), data[i]['emotion']))
+            times.append((datetime.strptime(data[i]['created_at'], '%Y-%m-%dT%H:%M:%SZ'), data[i]['emotion']))
 
         xs = []
         ys = []
