@@ -21,3 +21,8 @@ With a prompt in current directory files type the command below to run applicati
 ```
 python main.py --disable-web-security
 ```
+
+# About the Authors
+
+- Pedro Prokath Wagner
+- Isabel H. Manssour -- Professor Coordinator of DaVInt.
