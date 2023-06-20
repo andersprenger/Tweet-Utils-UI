@@ -25,4 +25,7 @@ python main.py --disable-web-security
 # About the Authors
 
 - Pedro Prokath Wagner
+- Anderson R. P. Sprenger -- Reseacher of DaVInt.
+- Gabriel Z. de Souza -- Reseacher of DaVInt.
+- Vinícius P. Dias -- Reseacher of DaVInt.
 - Isabel H. Manssour -- Professor Coordinator of DaVInt.
