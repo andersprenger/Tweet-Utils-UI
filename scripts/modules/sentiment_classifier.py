@@ -1,18 +1,19 @@
-#
-# Twitter Sentiment Classifier
-#
-# author: Anderson Sprenger, Gustavo Duarte
-# email: anderson.sprenger@edu.pucrs.br
-# date: June 04, 2023
-#
-# This script will be used to classify the tweets by positive, negative or neutral sentiments.
-#
-# The script will use the following classifiers:
-# - Logistic Regression
-# - Multinomial Naive Bayes
-# - Support Vector Machine
-#
-import os
+"""
+Twitter Sentiment Classifier
+
+Authors: Anderson Sprenger, Gustavo Duarte
+Email: anderson.sprenger@edu.pucrs.br
+Date: June 19, 2023
+
+This script is designed to classify tweets based on their sentiment, categorizing them as positive, negative, or neutral.
+
+The script utilizes the following classifiers:
+- Logistic Regression
+- Multinomial Naive Bayes
+- Support Vector Machine
+"""
+
+from enum import Enum
 
 import pandas as pd
 from nltk.tokenize import TweetTokenizer
@@ -22,9 +23,26 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
 
 
+class Sentiment(Enum):
+    """
+    Enum os sentimentos a serem classificados nos tweets.
+    """
+
+    NEGATIVE = 0
+    POSITIVE = 1
+    NEUTRAL = 2
+
+
 class SentimentClassifier:
-    # Construtor da classe...
+    """
+    Classe com a implementação do classificador de sentimento.
+    """
+
     def __init__(self):
+        """
+        Construtor da classe com a implementação do classificador de sentimento.
+        """
+
         # Inicializando o tokenizador de tweets...
         tweet_tokenizer = TweetTokenizer()
 
@@ -39,8 +57,12 @@ class SentimentClassifier:
         self.classifierSVMNegativeNeutral = svm.SVC(kernel='linear')
         self.train_sentiment_classifiers()
 
-    # Função para treinar os classificadores de sentimento...
-    def train_sentiment_classifiers(self):
+    def train_sentiment_classifiers(self) -> None:
+        """
+        Função para treinar os classificadores de sentimento...
+        :return: None
+        """
+
         # Carregando o dataset de treinamento...
         generalTrainingData = pd.read_excel('dataset.xlsx', engine='openpyxl').fillna(' ')
 
@@ -68,35 +90,29 @@ class SentimentClassifier:
         self.classifierMultinomialPositiveNeutral.fit(vectPositiveNeutralTrain, classesPositiveNeutralTrain)
         self.classifierSVMNegativeNeutral.fit(vectNegativeNeutralTrain, classesNegativeNeutralTrain)
 
-    # Função para classificar os tweets...
-    # A função recebe um dicionário com os dados do tweet e retorna um dicionário com o resultado da classificação.
-    def predict(self, data) -> dict:
-        # Preparando os dados para a classificação...
-        data.update((x, [y]) for x, y in data.items())
-        data_df = pd.DataFrame.from_dict(data)
+    def predict(self, data: [str]) -> Sentiment:
+        """
+        Função para classificar os tweets...
+        :param data: um [str] com o texto do tweet
+        :return: o Sentiment encontrado na classificação
+        """
 
         # Vetorizando os dados para a classificação...
-        vectPositiveNegative = self.vectorizerPositiveNegative.transform(data_df["text"])
-        vectPositiveNeutral = self.vectorizerPositiveNeutral.transform(data_df["text"])
-        vectNegativeNeutral = self.vectorizerNegativeNeutral.transform(data_df["text"])
+        vectPositiveNegative = self.vectorizerPositiveNegative.transform(data)
+        vectPositiveNeutral = self.vectorizerPositiveNeutral.transform(data)
+        vectNegativeNeutral = self.vectorizerNegativeNeutral.transform(data)
 
         # Classificando os tweets...
         resultPositiveNeutral = self.classifierMultinomialPositiveNeutral.predict(vectPositiveNeutral)
         resultNegativeNeutral = self.classifierSVMNegativeNeutral.predict(vectNegativeNeutral)
         resultPositiveNegative = self.classifierLRPositiveNegative.predict(vectPositiveNegative)
 
-        finalResult = []
-
         # Verificando o resultado da classificação...
         if (resultPositiveNeutral == 0).any() and (resultNegativeNeutral == 0).any():
-            finalResult.append(0)
+            return Sentiment.NEUTRAL
         elif (resultPositiveNeutral == 1).any() and (resultPositiveNegative == 1).any():
-            finalResult.append(1)
+            return Sentiment.POSITIVE
         elif (resultNegativeNeutral == 2).any() and (resultPositiveNegative == 2).any():
-            finalResult.append(2)
+            return Sentiment.NEGATIVE
         else:
-            finalResult.append(0)
-
-        # Retornando o resultado da classificação...
-        output = {'results': int(finalResult[0])}
-        return output
+            return Sentiment.NEUTRAL

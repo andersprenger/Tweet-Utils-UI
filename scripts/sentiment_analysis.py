@@ -3,12 +3,12 @@ import argparse
 import json
 import pathlib
 
-from scripts.modules.sentiment_classifier import SentimentClassifier
+from scripts.modules.sentiment_classifier import SentimentClassifier, Sentiment
 
 sys.path.append("..")
 
 
-def add_args():
+def add_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description='Classify tweets as positive, negative, or neutral with machine learning techniques.')
     parser.add_argument('-i', '--infile', metavar='', required=True,
@@ -19,14 +19,14 @@ def add_args():
     return parser.parse_args()
 
 
-def write_json(outfile, data):
+def write_json(outfile, data) -> None:
     json_string = json.dumps(data, sort_keys=True, indent=4, ensure_ascii=False)
     with open(outfile, 'w', encoding='utf8') as f:
         f.write(json_string)
     sys.stdout.write('All done. File written to ' + outfile)
 
 
-def write_file(infile, outfile, data):
+def write_file(infile, outfile, data) -> None:
     if outfile != 'output_sentiments.json':
         extension = pathlib.Path(outfile).suffix
     else:
@@ -39,7 +39,7 @@ def write_file(infile, outfile, data):
         sys.stdout.write('Output file must be in JSON format\nQuitting...')
 
 
-def predict(infile, outfile):
+def predict(infile, outfile) -> None:
     print('Loading model...')
     classifier = SentimentClassifier()
 
@@ -51,22 +51,27 @@ def predict(infile, outfile):
 
     count = 0
     for tweet in data:
+        # Inform user of progress
         print('Processing tweet ' + str(count) + ' of ' + str(len(data)))
         count += 1
 
-        temp_request = classifier.predict(tweet)
-        sentiment = temp_request['results']
+        # Get text from tweet and predict sentiment
+        text: [str] = [tweet['text']]
+        sentiment: Sentiment = classifier.predict(text)
 
+        # Create new tweet extracting the values from array
+        # When adding a new value to an existing JSON dictionary, all other values turn into arrays
+        # This is a workaround to avoid that
         new_tweet = {}
-
         for value in tweet:
-            new_tweet[value] = tweet[value][0]
+            new_tweet[value] = tweet[value]
 
-        if sentiment == 1:
+        # Add sentiment to new tweet
+        if sentiment == Sentiment.POSITIVE:
             new_tweet['emotion'] = 'positive'
-        if sentiment == 0:
+        if sentiment == Sentiment.NEUTRAL:
             new_tweet['emotion'] = 'neutral'
-        if sentiment == 2:
+        if sentiment == Sentiment.NEGATIVE:
             new_tweet['emotion'] = 'negative'
 
         new_data.append(new_tweet)
@@ -74,7 +79,7 @@ def predict(infile, outfile):
     write_file(infile, outfile, new_data)
 
 
-def main():
+def main() -> None:
     args = add_args()
     predict(args.infile, args.outfile)
 
