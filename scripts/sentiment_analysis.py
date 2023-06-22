@@ -56,7 +56,7 @@ def predict(infile, outfile) -> None:
         count += 1
 
         # Get text from tweet and predict sentiment
-        text: [str] = [tweet['text']]
+        text = tweet['text']
         sentiment: Sentiment = classifier.predict(text)
 
         # Create new tweet extracting the values from array

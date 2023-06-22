@@ -1,21 +1,25 @@
 """
 Twitter Sentiment Classifier
 
-Authors: Anderson Sprenger, Gustavo Duarte
-Email: anderson.sprenger@edu.pucrs.br
-Date: June 19, 2023
+    This script is designed to classify tweets based on their sentiment, categorizing them as positive, negative,
+    or neutral.
 
-This script is designed to classify tweets based on their sentiment, categorizing them as positive, negative, or neutral.
+- Authors: Anderson Sprenger, Gustavo Duarte
+- Email: anderson.sprenger@edu.pucrs.br
+- Date: June 22, 2023
 
 The script utilizes the following classifiers:
+
 - Logistic Regression
 - Multinomial Naive Bayes
 - Support Vector Machine
 """
 
+import re
 from enum import Enum
 
 import pandas as pd
+from nltk.stem import PorterStemmer
 from nltk.tokenize import TweetTokenizer
 from sklearn import svm
 from sklearn.feature_extraction.text import CountVectorizer
@@ -44,12 +48,15 @@ class SentimentClassifier:
         """
 
         # Inicializando o tokenizador de tweets...
-        tweet_tokenizer = TweetTokenizer()
+        self.tweet_tokenizer = TweetTokenizer()
+
+        # Inicializando o stemmer de palavras...
+        self.text_stemmer = PorterStemmer()
 
         # Inicializando os vetorizadores de palavras...
-        self.vectorizerPositiveNegative = CountVectorizer(analyzer="word", tokenizer=tweet_tokenizer.tokenize)
-        self.vectorizerPositiveNeutral = CountVectorizer(analyzer="word", tokenizer=tweet_tokenizer.tokenize)
-        self.vectorizerNegativeNeutral = CountVectorizer(analyzer="word", tokenizer=tweet_tokenizer.tokenize)
+        self.vectorizerPositiveNegative = CountVectorizer(analyzer="word", tokenizer=self.tweet_tokenizer.tokenize)
+        self.vectorizerPositiveNeutral = CountVectorizer(analyzer="word", tokenizer=self.tweet_tokenizer.tokenize)
+        self.vectorizerNegativeNeutral = CountVectorizer(analyzer="word", tokenizer=self.tweet_tokenizer.tokenize)
 
         # Inicializando os classificadores...
         self.classifierLRPositiveNegative = LogisticRegression(random_state=0)
@@ -90,17 +97,49 @@ class SentimentClassifier:
         self.classifierMultinomialPositiveNeutral.fit(vectPositiveNeutralTrain, classesPositiveNeutralTrain)
         self.classifierSVMNegativeNeutral.fit(vectNegativeNeutralTrain, classesNegativeNeutralTrain)
 
-    def predict(self, data: [str]) -> Sentiment:
+    def preprocess_data(self, data: str) -> str:
         """
-        Função para classificar os tweets...
-        :param data: um [str] com o texto do tweet
+        Função para pré-processar os dados...
+
+        - Remove caracteres especiais, números, espaços em branco, pontuação e links.
+        - Aplica o stemming.
+
+        :param data: Uma string com o texto do tweet.
+        :return: Uma lista de palavras pré-processadas extraídas do texto do tweet.
+        """
+
+        # Limpando os dados...
+        data = re.sub(r'[^a-zA-Z0-9\s]', '', data)  # Remove caracteres especiais
+        data = re.sub(r'\d+', '', data)  # Remove números
+        data = re.sub(r'\s+', ' ', data)  # Remove espaços em branco
+        data = re.sub(r'[.?!,:;]', '', data)  # Remove pontuação
+        data = re.sub(r'http\S+|www\S+|\S+\.com\S+', '', data)  # remove links
+
+        # Preparando os dados para o stemming...
+        tokenized_data = self.tweet_tokenizer.tokenize(data)
+
+        # Aplicando o stemming...
+        stemmed_data = []
+        for word in tokenized_data:
+            stemmed_data += [self.text_stemmer.stem(word)]
+
+        return ' '.join(stemmed_data)
+
+    def predict(self, data: str) -> Sentiment:
+        """
+        Função para classificar os tweets em sentimentos positivo, negativo ou neutro.
+
+        :param data: uma string com o texto do tweet
         :return: o Sentiment encontrado na classificação
         """
 
+        # Preparando os dados para a classificação...
+        preprocessed_data = [self.preprocess_data(data)]
+
         # Vetorizando os dados para a classificação...
-        vectPositiveNegative = self.vectorizerPositiveNegative.transform(data)
-        vectPositiveNeutral = self.vectorizerPositiveNeutral.transform(data)
-        vectNegativeNeutral = self.vectorizerNegativeNeutral.transform(data)
+        vectPositiveNegative = self.vectorizerPositiveNegative.transform(preprocessed_data)
+        vectPositiveNeutral = self.vectorizerPositiveNeutral.transform(preprocessed_data)
+        vectNegativeNeutral = self.vectorizerNegativeNeutral.transform(preprocessed_data)
 
         # Classificando os tweets...
         resultPositiveNeutral = self.classifierMultinomialPositiveNeutral.predict(vectPositiveNeutral)
